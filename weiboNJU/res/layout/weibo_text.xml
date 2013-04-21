@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <ImageView
+        android:id="@+id/headImage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/myimg" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/nameText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="董爷威霸"
+                android:textSize="@dimen/middle_text" />
+
+            <TextView
+                android:id="@+id/numOfComAndTrans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="fill_vertical"
+                android:text="评论 2 转发 8"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/small_text" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/mainWeibo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="【中国查处苹果应用商店等198家涉黄网站】中国全国“扫黄打非”工作小组办公室16日发布消息说，“净网”行动又依法查处苹果应用商店、书朋网等198家登载淫秽色情信息的网站。http://t.cn/zTIwgB6近年来，在利益驱动下，制黄传黄活动趋于多变、隐蔽，网络淫秽色情现象仍然较为严重。"
+            android:textColor="@color/black"
+            android:textSize="@dimen/large_text" />
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/weibotu" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/transmit_layout_border"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="0.1dip"
+                android:background="@drawable/transmit_layout"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/transWeibo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:text="@任志强：南京机场，一碗排骨面加一个煎蛋，九十五元。" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp" >
+
+            <TextView
+                android:id="@+id/dateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="今天17:48"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/small_text" />
+
+            <TextView
+                android:id="@+id/fromText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:text="来自：小米手机"
+                android:textSize="@dimen/small_text" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="赞+1" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

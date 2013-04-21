@@ -146,7 +146,7 @@ public class MainActivity extends Activity {
         	Animation animation = new TranslateAnimation(one*currIndex, one*arg0, 0, 0);//显然这个比较简洁，只有一行代码。  
             currIndex = arg0;
             animation.setFillAfter(true);// True:图片停在动画结束位置
-            animation.setDuration(300);
+            animation.setDuration(50);
             imageView.startAnimation(animation);
         }  
     }
