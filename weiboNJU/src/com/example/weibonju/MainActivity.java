@@ -3,6 +3,9 @@ package com.example.weibonju;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.weibo.sdk.android.Oauth2AccessToken;
+import com.weibo.sdk.android.Weibo;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.graphics.BitmapFactory;
@@ -11,6 +14,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -18,22 +22,29 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-	private ViewPager viewPager;//Ò³¿¨ÈÝÆ÷
-	private ImageView imageView;//À¶É«Ð¡Ìõ
-	private TextView textView1,textView2,textView3,textView4;//tabs
-	private List<View> views;//tab list
-	private int offset = 0;//Ð¡ÌõÎ»ÖÃ
-	private int currIndex = 0;//Ò³¿¨±àºÅ
-	private int viewNum=4;//Ò³¿¨ÊýÁ¿
-	private int bmpW;//Ð¡Ìõ¿í¶È
-	private View view1,view2,view3,view4;//¸÷¸öÒ³¿¨
+	private ViewPager viewPager;
+	private ImageView imageView;
+	private TextView textView1,textView2,textView3,textView4;
+	private List<View> views;
+	private int offset = 0;
+	private int currIndex = 0;
+	private int viewNum=4;
+	private int bmpW;
+	private View view1,view2,view3,view4;
+	
+
+    public static final String TAG = "weibo-gyx";
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +53,25 @@ public class MainActivity extends Activity {
         InitImageView();
         InitTextView();
         InitViewPager();
+        InitSpinner();
+    }
+
+	private void InitSpinner() {
+		Spinner spinner=(Spinner)view1.findViewById(R.id.spinner1);
+		ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(this, R.array.positiontext, android.R.layout.simple_spinner_item);
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner.setAdapter(adapter);
+	}
+	
+	class SpinnerXMLSelectedListener implements OnItemSelectedListener{  
+        public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
+                long arg3) {  
+        }  
+  
+        public void onNothingSelected(AdapterView<?> arg0) {  
+              
+        }  
+          
     }
 
 	private void InitViewPager() {
@@ -75,14 +105,14 @@ public class MainActivity extends Activity {
 
 	private void InitImageView() {
 		imageView= (ImageView) findViewById(R.id.cursor);  
-        bmpW = BitmapFactory.decodeResource(getResources(), R.drawable.bar).getWidth();// »ñÈ¡Í¼Æ¬¿í¶È  
+        bmpW = BitmapFactory.decodeResource(getResources(), R.drawable.bar).getWidth();// ï¿½ï¿½È¡Í¼Æ¬ï¿½ï¿½ï¿½  
         DisplayMetrics dm = new DisplayMetrics();  
         getWindowManager().getDefaultDisplay().getMetrics(dm);  
-        int screenW = dm.widthPixels;// »ñÈ¡·Ö±æÂÊ¿í¶È  
-        offset = (screenW / viewNum - bmpW) / 2;// ¼ÆËãÆ«ÒÆÁ¿  
+        int screenW = dm.widthPixels;
+        offset = (screenW / viewNum - bmpW) / 2;
         Matrix matrix = new Matrix();  
         matrix.postTranslate(offset, 0);  
-        imageView.setImageMatrix(matrix);// ÉèÖÃ¶¯»­³õÊ¼Î»ÖÃ  
+        imageView.setImageMatrix(matrix);
 	}
 
 
@@ -143,9 +173,9 @@ public class MainActivity extends Activity {
         }  
   
         public void onPageSelected(int arg0) {  
-        	Animation animation = new TranslateAnimation(one*currIndex, one*arg0, 0, 0);//ÏÔÈ»Õâ¸ö±È½Ï¼ò½à£¬Ö»ÓÐÒ»ÐÐ´úÂë¡£  
+        	Animation animation = new TranslateAnimation(one*currIndex, one*arg0, 0, 0);//ï¿½ï¿½È»ï¿½ï¿½ï¿½ï¿½È½Ï¼ï¿½à£¬Ö»ï¿½ï¿½Ò»ï¿½Ð´ï¿½ï¿½ë¡£  
             currIndex = arg0;
-            animation.setFillAfter(true);// True:Í¼Æ¬Í£ÔÚ¶¯»­½áÊøÎ»ÖÃ
+            animation.setFillAfter(true);
             animation.setDuration(50);
             imageView.startAnimation(animation);
         }  

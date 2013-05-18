@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="positiontext">
+        <item>南京大学</item>
+        <item>教学楼</item>
+        <item>食堂</item>
+        <item>逸夫馆</item>
+        <item>费彝民楼</item>
+    </string-array>
+</resources>

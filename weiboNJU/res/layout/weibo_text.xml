@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:orientation="horizontal" >
 
     <ImageView
@@ -13,8 +13,8 @@
         android:src="@drawable/myimg" />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
@@ -31,6 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="董爷威霸"
+                android:textColor="@color/black"
                 android:textSize="@dimen/middle_text" />
 
             <TextView
@@ -39,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="fill_vertical"
                 android:text="评论 2 转发 8"
-                android:textColor="@color/blue"
+                android:textColor="@color/cadetblue"
                 android:textSize="@dimen/small_text" />
 
         </LinearLayout>
@@ -49,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="【中国查处苹果应用商店等198家涉黄网站】中国全国“扫黄打非”工作小组办公室16日发布消息说，“净网”行动又依法查处苹果应用商店、书朋网等198家登载淫秽色情信息的网站。http://t.cn/zTIwgB6近年来，在利益驱动下，制黄传黄活动趋于多变、隐蔽，网络淫秽色情现象仍然较为严重。"
+            android:text="@string/t0"
             android:textColor="@color/black"
             android:textSize="@dimen/large_text" />
 
@@ -79,7 +80,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:text="@任志强：南京机场，一碗排骨面加一个煎蛋，九十五元。" />
+                    android:text="@string/t1"
+                    android:textColor="@color/black" />
 
             </LinearLayout>
 

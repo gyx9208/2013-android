@@ -1,0 +1,35 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".WelcomeActivity" >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/welpage" />
+
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="134dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:background="#50000000"
+            android:text="用微博登录"
+            android:visibility="invisible" />
+
+        <Button
+            android:id="@+id/sso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="sso" />
+
+    </FrameLayout>
+
+</LinearLayout>
