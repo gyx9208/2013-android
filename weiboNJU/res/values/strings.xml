@@ -7,5 +7,6 @@
     <string name="t0">【中国查处苹果应用商店等198家涉黄网站】中国全国“扫黄打非”工作小组办公室16日发布消息说，“净网”行动又依法查处苹果应用商店、书朋网等198家登载淫秽色情信息的网站。http://t.cn/zTIwgB6近年来，在利益驱动下，制黄传黄活动趋于多变、隐蔽，网络淫秽色情现象仍然较为严重。</string>
     <string name="title_activity_welcome">welcome</string>
     <string name="hello_world">Hello world!</string>
+    <string name="menu_logout">注销账号</string>
 
 </resources>

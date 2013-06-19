@@ -33,6 +33,7 @@
             android:name="com.example.weibonju.MainActivity"
             android:label="@string/app_name" >
         </activity>
+        <service android:name="com.weibonju.service.RefreshWeiboService"/>
     </application>
 
 </manifest>

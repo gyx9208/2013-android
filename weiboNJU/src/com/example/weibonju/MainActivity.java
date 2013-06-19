@@ -3,11 +3,21 @@ package com.example.weibonju;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ant.liao.GifView;
+import com.ant.liao.GifView.GifImageType;
 import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibo.sdk.android.Weibo;
+import com.weibonju.action.IAccountMatter;
+import com.weibonju.action.impl.AccountMatter;
+import com.weibonju.configure.WeiboContext;
+import com.weibonju.service.RefreshWeiboService;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.support.v4.view.PagerAdapter;
@@ -17,6 +27,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -28,6 +39,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +67,7 @@ public class MainActivity extends Activity {
         InitTextView();
         InitViewPager();
         InitSpinner();
+        InitRefreshFunction();
     }
 
 	private void InitSpinner() {
@@ -115,13 +129,6 @@ public class MainActivity extends Activity {
         imageView.setImageMatrix(matrix);
 	}
 
-
-	@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
 	
 	private class MyOnClickListener implements OnClickListener{  
         private int index=0;  
@@ -180,4 +187,76 @@ public class MainActivity extends Activity {
             imageView.startAnimation(animation);
         }  
     }
+
+
+	@Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		super.onOptionsItemSelected(item);
+		switch(item.getItemId())
+        {
+        case R.id.menu_settings:
+            break;
+        case R.id.menu_logout:
+        	logout();
+            break;
+        }
+		return true;
+	}
+
+	private void logout() {
+		IAccountMatter acc=new AccountMatter(this,(WeiboContext)getApplication());
+		acc.logout();
+		Intent intent=new Intent(MainActivity.this,WelcomeActivity.class);
+		startActivity(intent);
+		finish();
+	}
+	
+	public static Handler handler;
+	
+	@SuppressLint("HandlerLeak")
+	private void InitRefreshFunction() {
+		handler=new Handler(){
+			@Override
+			public void handleMessage(Message msg) {
+				StopRefreshAction();
+			}
+		};
+		
+		ImageView refreshButton=(ImageView)view1.findViewById(R.id.refreshButton);
+		refreshButton.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				StartRefreshAction();
+			}
+			
+		});
+		GifView gif=(GifView)view1.findViewById(R.id.RefreshView);
+		gif.setGifImageType(GifImageType.COVER);
+		gif.setGifImage(R.drawable.l2);
+	}
+	
+	private void StopRefreshAction() {
+		stopService(new Intent(MainActivity.this, RefreshWeiboService.class));
+		WeiboDivider d=(WeiboDivider)view1.findViewById(R.id.RefreshDivider);
+		TableRow r=(TableRow)view1.findViewById(R.id.RefreshTableRow);
+		d.setVisibility(View.GONE);
+		r.setVisibility(View.GONE);
+	}
+
+	private void StartRefreshAction(){
+		WeiboDivider d=(WeiboDivider)view1.findViewById(R.id.RefreshDivider);
+		TableRow r=(TableRow)view1.findViewById(R.id.RefreshTableRow);
+		d.setVisibility(View.VISIBLE);
+		r.setVisibility(View.VISIBLE);
+		Intent intent=new Intent(MainActivity.this,RefreshWeiboService.class);
+		startService(intent);
+	}
 }

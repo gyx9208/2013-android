@@ -1,4 +1,4 @@
-package com.weibonju.configure;
+package gyx.weibosdk;
 
 public class Constants {
 	public static final String APP_KEY="2954057970";

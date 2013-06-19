@@ -1,5 +1,7 @@
 package com.weibonju.configure;
 
+import gyx.weibosdk.Constants;
+
 import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibo.sdk.android.Weibo;
 import android.app.Application;
