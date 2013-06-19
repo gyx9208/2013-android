@@ -45,6 +45,9 @@ public class RefreshWeiboService extends Service {
 		Log.d("mark", "Service onStart: " + "\n" + "当前线程名称："  
                 + Thread.currentThread().getName() + "," + "当前线程id："  
                 + Thread.currentThread().getId());
+		
+		
+		
 		new Thread(new Runnable() {  
             public void run() {   
             	try {
@@ -55,7 +58,7 @@ public class RefreshWeiboService extends Service {
         		}
         		MainActivity.handler.sendMessage(new Message());
                 Looper.prepare();  
-                Toast.makeText(RefreshWeiboService.this, "Service中子线程启动！", Toast.LENGTH_SHORT).show();  
+                Toast.makeText(RefreshWeiboService.this, "网络连接缓慢，请稍后再试", Toast.LENGTH_SHORT).show();  
                 Looper.loop();  
             }  
         }).start();
