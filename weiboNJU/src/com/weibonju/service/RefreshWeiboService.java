@@ -5,11 +5,16 @@ import com.example.weibonju.MainActivity;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 public class RefreshWeiboService extends Service {
 
+	Thread downloadThread;
+	Thread timerThread;
+	
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -20,47 +25,41 @@ public class RefreshWeiboService extends Service {
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
-		new Thread(new Runnable() {  
-            public void run() {  
-                Log.d("mark", "Service onCreate: " + "\n" + "当前线程名称："  
-                        + Thread.currentThread().getName() + "," + "当前线程id："  
-                        + Thread.currentThread().getId());  
-            }  
-        }).start();  
+		Log.d("mark", "Service onCreate: " + "\n" + "当前线程名称："  
+                + Thread.currentThread().getName() + "," + "当前线程id："  
+                + Thread.currentThread().getId()); 
 	}
 
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		new Thread(new Runnable() {  
-            public void run() {  
-                Log.d("mark", "Service onDestroy: " + "\n" + "当前线程名称："  
-                        + Thread.currentThread().getName() + "," + "当前线程id："  
-                        + Thread.currentThread().getId());  
-            }  
-        }).start();  
+		Log.d("mark", "Service onDestroy: " + "\n" + "当前线程名称："  
+                + Thread.currentThread().getName() + "," + "当前线程id："  
+                + Thread.currentThread().getId());  
 	}
 
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		// TODO Auto-generated method stub
+		Log.d("mark", "Service onStart: " + "\n" + "当前线程名称："  
+                + Thread.currentThread().getName() + "," + "当前线程id："  
+                + Thread.currentThread().getId());
 		new Thread(new Runnable() {  
-            public void run() {  
-                Log.d("mark", "Service onStart: " + "\n" + "当前线程名称："  
-                        + Thread.currentThread().getName() + "," + "当前线程id："  
-                        + Thread.currentThread().getId());  
-                try {
-        			Thread.sleep(5000);
+            public void run() {   
+            	try {
+        			Thread.sleep(10000);
         		} catch (InterruptedException e) {
         			// TODO Auto-generated catch block
         			e.printStackTrace();
         		}
         		MainActivity.handler.sendMessage(new Message());
-        		
+                Looper.prepare();  
+                Toast.makeText(RefreshWeiboService.this, "Service中子线程启动！", Toast.LENGTH_SHORT).show();  
+                Looper.loop();  
             }  
-        }).start();  
-		return super.onStartCommand(intent, flags, startId);
+        }).start();
+		return START_NOT_STICKY;
 	}
 
 

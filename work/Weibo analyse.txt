@@ -1,0 +1,217 @@
+带地理位置的微博不能是转发！
+https://api.weibo.com/2/place/poi_timeline.json
+access_token 必须
+poiid 必须
+count 20 默认，无所谓
+page 1 2 3……
+其他暂时用不到
+
+返回结果：
+1级key3个：statuses total_number states
+
+{
+	"statuses": [ 表示微博，一般是20个
+		{
+			"created_at": "Wed Jun 19 16:30:20 +0800 2013", 时间
+			"id": "3590941447573254", 微博ID
+			"mid": "3590941447573254", 同上
+			"idstr": "3590941447573254", 同上
+			"text": "@宁香Qing 我们在你母校 我在这里:http://t.cn/zlSSYfq", 文章内容 “我在这里这一段是客户端自己加的，可有可无”
+			"source": "<a href=\"http://app.weibo.com/t/feed/c66T5g\" rel=\"nofollow\">Android客户端</a>", 来自哪，我的微博估计就是weiboNJU
+			"favorited": false, 
+			"truncated": false, 
+			"in_reply_to_status_id": "", 
+			"in_reply_to_user_id": "", 
+			"in_reply_to_screen_name": "",  即使是转发的微博，这3条也都是空的，意义不明
+			"pic_ids": [  图片是在这里，如果有的话。 如果没图，下面3个字段是没有的。
+				"b205723cjw1e5sh1vl9zbj20da0hsjst"
+			],
+			"thumbnail_pic": "http://ww1.sinaimg.cn/thumbnail/b205723cjw1e5sh1vl9zbj20da0hsjst.jpg", 小图 无水印
+			"bmiddle_pic": "http://ww1.sinaimg.cn/bmiddle/b205723cjw1e5sh1vl9zbj20da0hsjst.jpg", 中图 有水印
+			"original_pic": "http://ww1.sinaimg.cn/large/b205723cjw1e5sh1vl9zbj20da0hsjst.jpg" 原图 有水印
+																								域名可以是ww1,ww2,ww3,ww4
+			, 
+			"geo": {		地理位置，无用
+				"type": "Point",
+				"coordinates": [
+					32.05519104,
+					118.7803421
+				]
+			},
+			"user": {		用户信息
+				"id": "1869320443",   ID
+				"idstr": "1869320443", ID 
+				"screen_name": "不学化学好多年",     屏幕上的名字
+				"name": "不学化学好多年",            同上，所有的都一样
+				"province": "11",       				省份 无用
+				"city": "8",							城市 无用
+				"location": "北京 海淀区",			地址 无用
+				"description": "介绍神马的最讨厌了",   个人简介
+				"url": "",								个人资料里的url
+				"profile_image_url": "http://tp4.sinaimg.cn/1869320443/50/5651116659/0",  头像地址50*50
+				"profile_url": "shenmayuming",			域名，weibo.com/域名 可以访问主页。。weibo.com/id也一样	
+				"domain": "shenmayuming",
+				"weihao": "",							
+				"gender": "f",							性别 女，男是m
+				"followers_count": 245,					粉丝245
+				"friends_count": 345,					关注345
+				"statuses_count": 987,					微博987
+				"favourites_count": 49,					收藏49
+				"created_at": "Sun Nov 21 10:15:27 +0800 2010",		创建日期
+				"following": false,						是否已关注他 这里表示否
+				"allow_all_act_msg": false,				是否允许所有人给我发私信
+				"geo_enabled": true,					是否允许地理位置，一般都是true，否则发不出这样的东西
+				"verified": false,						微博验证用户
+				"verified_type": -1,					-1 不是 | 0 1新浪个人认证 黄V | 2 3新浪机构认证 蓝V
+				"remark": "",
+				"allow_all_comment": false,				是否允许所有人对我的微博进行评论
+				"avatar_large": "http://tp4.sinaimg.cn/1869320443/180/5651116659/0",  头像大图
+				"verified_reason": "",					认证原因
+				"follow_me": false,						是否关注我
+				"online_status": 0,						用户的在线状态，0：不在线、1：在线
+				"bi_followers_count": 93,				用户的互粉数
+				"lang": "zh-cn",					
+				"star": 0,
+				"mbtype": 0,
+				"mbrank": 0,
+				"block_word": 0,
+				"level": 1,
+				"type": 1,
+				"ulevel": 0,
+				"badge": {
+					"361": "0",
+					"kuainv": {
+						"level": 0
+					},
+					"uc_domain": 0,
+					"enterprise": 0,
+					"anniversary": 0,
+					"suishoupai": "20130601"			
+				},
+				"extend": {
+					"privacy": {
+						"mobile": 1
+					},
+					"mbprivilege": "0000000000000000000000000000000000000000000000000000000000000000"
+				}
+			},
+			"annotations": [	    自动添加
+				{
+					"client_mblogid": "e71af05c-b059-4df8-a7d0-ba803212c899",
+					"place": {
+						"poiid": "B2094757D06FA3FE409E",
+						"title": "南京大学(鼓楼校区)",
+						"lon": 118.7803421,
+						"lat": 32.05519104,
+						"type": "checkin"
+					}
+				}
+			],
+			"reposts_count": 0,    转发数
+			"comments_count": 2,	评论数
+			"attitudes_count": 0,   赞的次数
+			"mlevel": 0,
+			"visible": {
+				"type": 0,
+				"list_id": 0
+			}
+		},
+		{一条微博},{一条微博},{一条微博},{一条微博}…………………………
+	],
+	"total_number": "7618",   这个位置一共多少条微博
+	"states": [					
+		{
+			"id": "3590941447573254",
+			"state": 0
+		},
+		{
+			"id": "3590933230705930",
+			"state": 0
+		},
+		{
+			"id": "3590910358752549",
+			"state": 0
+		},
+		{
+			"id": "3590903937849590",
+			"state": 0
+		},
+		{
+			"id": "3590877623078938",
+			"state": 0
+		},
+		{
+			"id": "3590818503704521",
+			"state": 0
+		},
+		{
+			"id": "3590792117109735",
+			"state": 0
+		},
+		{
+			"id": "3590790905070260",
+			"state": 0
+		},
+		{
+			"id": "3590737289762869",
+			"state": 0
+		},
+		{
+			"id": "3590727789007686",
+			"state": 0
+		},
+		{
+			"id": "3590692779432137",
+			"state": 0
+		},
+		{
+			"id": "3590653928161969",
+			"state": 0
+		},
+		{
+			"id": "3590640212240721",
+			"state": 0
+		},
+		{
+			"id": "3590615940020291",
+			"state": 0
+		},
+		{
+			"id": "3590615793188078",
+			"state": 0
+		},
+		{
+			"id": "3590614744311930",
+			"state": 0
+		},
+		{
+			"id": "3590612777618729",
+			"state": 0
+		},
+		{
+			"id": "3590612442258809",
+			"state": 1
+		},
+		{
+			"id": "3590610688674806",
+			"state": 0
+		},
+		{
+			"id": "3590609195984381",
+			"state": 0
+		}
+	]
+}
+微博：
+id				"id"
+发布日期      "created_at"
+text内容		"text"
+评论数，转发数，赞次数 "reposts_count"  "comments_count"  "attitudes_count"
+小图   zanshi不需要大图  "pic_ids"  "thumbnail_pic"
+来自什么什么什么  "source"
+uid				"user":“id”
+screenname     "user":"screen_name": "不学化学好多年"
+头像小图     "profile_image_url"
+
+
+暂定一页20个，一次刷新完。图片慢慢载入，如何？
