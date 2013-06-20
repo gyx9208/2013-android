@@ -16,7 +16,6 @@ public class SinglePost implements Serializable {
 	private String text;
 	private int reposts_count,comments_count,attitudes_count;
 	private String pic_ids;
-	private URL thumbnail_pic;
 	private String source;
 	
 	private long uid;
@@ -64,12 +63,6 @@ public class SinglePost implements Serializable {
 	}
 	public void setPic_ids(String pic_ids) {
 		this.pic_ids = pic_ids;
-	}
-	public URL getThumbnail_pic() {
-		return thumbnail_pic;
-	}
-	public void setThumbnail_pic(URL thumbnail_pic) {
-		this.thumbnail_pic = thumbnail_pic;
 	}
 	public String getSource() {
 		return source;

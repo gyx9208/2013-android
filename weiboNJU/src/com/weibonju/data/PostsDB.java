@@ -32,7 +32,6 @@ public class PostsDB {
 		contentValues.put("comments_count", post.getComments_count());
 		contentValues.put("attitudes_count", post.getAttitudes_count());
 		contentValues.put("pic_ids", post.getPic_ids());
-		contentValues.put("thumbnail_pic", post.getThumbnail_pic().toString());
 		contentValues.put("source", post.getSource());
 		contentValues.put("uid", post.getUid());
 		contentValues.put("screen_name", post.getScreen_name());
@@ -60,7 +59,6 @@ public class PostsDB {
             post.setScreen_name(c.getString(c.getColumnIndex("screen_name")));
             try {
             	post.setProfile_image_url(new URL(c.getString(c.getColumnIndex("profile_image_url"))));
-            	post.setThumbnail_pic(new URL(c.getString(c.getColumnIndex("thumbnail_pic"))));
 				post.setCreated_at(format.parse(c.getString(c.getColumnIndex("created_at"))));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
