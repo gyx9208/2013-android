@@ -215,3 +215,24 @@ screenname     "user":"screen_name": "不学化学好多年"
 
 
 暂定一页20个，一次刷新完。图片慢慢载入，如何？
+
+
+
+	private long pid;
+	private Date created_at;
+	private String text;
+	private int reposts_count,comments_count,attitudes_count;
+	private String pic_ids;
+	private URL thumbnail_pic;
+	private String source;
+	
+	private long uid;
+	private String screen_name;
+	private URL profile_image_url;
+	
+	DATABASE_CREATE=
+    		"CREATE TABLE IF NOT EXISTS " + TABLE_NAME +
+    		" (pid INTEGER PRIMARY KEY, created_at DATETIME, " +
+    		"text NVARCHAR, reposts_count INTEGER, comments_count INTEGER, attitudes_count INTEGER, " +
+    		"pic_ids VARCHAR, thumbnail_pic VARCHAR, source NVARCHAR, uid INTEGER, " +
+    		"screen_name NVARCHAR, profile_image_url VARCHAR)"
