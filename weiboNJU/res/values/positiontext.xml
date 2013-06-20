@@ -2,9 +2,12 @@
 <resources>
     <string-array name="positiontext">
         <item>南京大学</item>
-        <item>教学楼</item>
-        <item>食堂</item>
-        <item>逸夫馆</item>
-        <item>费彝民楼</item>
+        <item>南京大学(鼓楼校区)</item>
+        <item>南京大学(仙林校区)</item>
+        <item>鼓楼图书馆</item>
+        <item>鼓楼教学楼</item>
+        <item>鼓楼南门</item>
+        <item>鼓楼南园</item>
+        <item>雕刻时光咖啡馆</item>
     </string-array>
 </resources>

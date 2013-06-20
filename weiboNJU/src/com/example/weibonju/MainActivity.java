@@ -9,9 +9,13 @@ import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibo.sdk.android.Weibo;
 import com.weibonju.action.IAccountMatter;
 import com.weibonju.action.impl.AccountMatter;
+import com.weibonju.configure.ConfigureKeeper;
 import com.weibonju.configure.WeiboContext;
+import com.weibonju.data.SinglePost;
+import com.weibonju.service.RefreshAsyncTask;
 import com.weibonju.service.RefreshWeiboService;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -44,6 +48,11 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * 主界面
+ * @author gyx
+ *
+ */
 public class MainActivity extends Activity {
 
 	private ViewPager viewPager;
@@ -55,6 +64,7 @@ public class MainActivity extends Activity {
 	private int viewNum=4;
 	private int bmpW;
 	private View view1,view2,view3,view4;
+
 	
 
     public static final String TAG = "weibo-gyx";
@@ -68,16 +78,29 @@ public class MainActivity extends Activity {
         InitViewPager();
         InitSpinner();
         InitRefreshFunction();
+        LoadInfo();
     }
 
+    /**
+     *  加载之前浏览的页面，加载数据库中的内容
+     */
+	private void LoadInfo() {
+		Spinner spinner=(Spinner)view1.findViewById(R.id.spinner1);
+		spinner.setSelection(ConfigureKeeper.readSpinnerPos(this));
+	}
+
+	/**
+	 * 初始化下拉框
+	 */
 	private void InitSpinner() {
 		Spinner spinner=(Spinner)view1.findViewById(R.id.spinner1);
 		ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(this, R.array.positiontext, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		spinner.setAdapter(adapter);
+		spinner.setOnItemSelectedListener(new SpinnerSelectedListener());
 	}
 	
-	class SpinnerXMLSelectedListener implements OnItemSelectedListener{  
+	class SpinnerSelectedListener implements OnItemSelectedListener{  
         public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
                 long arg3) {  
         }  
@@ -88,6 +111,9 @@ public class MainActivity extends Activity {
           
     }
 
+	/**
+	 * 初始化页面
+	 */
 	private void InitViewPager() {
 		viewPager=(ViewPager) findViewById(R.id.vPager);
         views=new ArrayList<View>();
@@ -219,14 +245,28 @@ public class MainActivity extends Activity {
 		finish();
 	}
 	
-	public static Handler handler;
+	private Handler refreshHandler;
 	
 	@SuppressLint("HandlerLeak")
 	private void InitRefreshFunction() {
-		handler=new Handler(){
+		refreshHandler=new Handler(){
 			@Override
 			public void handleMessage(Message msg) {
-				StopRefreshAction();
+				switch(msg.what){
+				case 0://网络太慢，10秒内没有接到数据
+					refreshTask.cancel(true);
+					RemoveRefreshViews();
+					Toast.makeText(MainActivity.this, "网络连接缓慢，请稍后再试", Toast.LENGTH_SHORT).show();  
+					break;
+				case 1://接到完整的数据了
+					Bundle b=msg.getData();
+					@SuppressWarnings("unchecked")
+					ArrayList<SinglePost> list=(ArrayList<SinglePost>)b.get("list");
+					RefreshUI(list);
+					RemoveRefreshViews();
+					break;
+				}
+				RefreshAsyncTask.ReleaseInstance();
 			}
 		};
 		
@@ -236,27 +276,56 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				StartRefreshAction();
 			}
-			
 		});
-		GifView gif=(GifView)view1.findViewById(R.id.RefreshView);
-		gif.setGifImageType(GifImageType.COVER);
-		gif.setGifImage(R.drawable.l2);
 	}
 	
-	private void StopRefreshAction() {
-		stopService(new Intent(MainActivity.this, RefreshWeiboService.class));
-		WeiboDivider d=(WeiboDivider)view1.findViewById(R.id.RefreshDivider);
-		TableRow r=(TableRow)view1.findViewById(R.id.RefreshTableRow);
-		d.setVisibility(View.GONE);
-		r.setVisibility(View.GONE);
+
+	private RefreshAsyncTask refreshTask;
+	
+	private void StartRefreshAction(){
+		refreshTask=RefreshAsyncTask.getInstance(refreshHandler);
+		if(refreshTask != null && refreshTask.getStatus() != AsyncTask.Status.RUNNING){
+			WeiboDivider d=new WeiboDivider(this);
+			CampusRefreshRow r=new CampusRefreshRow(this);
+			TableLayout t=(TableLayout)view1.findViewById(R.id.MainTable);
+			GifView gif=(GifView)r.findViewById(R.id.RefreshView);
+			gif.setGifImageType(GifImageType.COVER);
+			gif.setGifImage(R.drawable.l2);
+			t.addView(d, 0);
+			t.addView(r, 0);
+			
+			Spinner spinner=(Spinner)view1.findViewById(R.id.spinner1);
+			int pos=spinner.getSelectedItemPosition();
+			int id=this.getResources().getIdentifier("poi"+pos, "string", "com.example.weibonju");
+			String poi=this.getResources().getString(id);
+			String token=((WeiboContext)this.getApplication()).getAccessToken().getToken();
+			Log.e(TAG, poi);
+			Log.e(TAG, token);
+			refreshTask.execute(new String[]{token,poi});
+		}
+		//Intent intent=new Intent(MainActivity.this,RefreshWeiboService.class);
+		//startService(intent);
+	}
+	
+	private void RemoveRefreshViews() {
+		//stopService(new Intent(MainActivity.this, RefreshWeiboService.class));
+		TableLayout t=(TableLayout)view1.findViewById(R.id.MainTable);
+		t.removeViewAt(0);
+		t.removeViewAt(0);
 	}
 
-	private void StartRefreshAction(){
-		WeiboDivider d=(WeiboDivider)view1.findViewById(R.id.RefreshDivider);
-		TableRow r=(TableRow)view1.findViewById(R.id.RefreshTableRow);
-		d.setVisibility(View.VISIBLE);
-		r.setVisibility(View.VISIBLE);
-		Intent intent=new Intent(MainActivity.this,RefreshWeiboService.class);
-		startService(intent);
+	private void RefreshUI(ArrayList<SinglePost> list) {
+		// TODO Auto-generated method stub
+		
 	}
+
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		Spinner spinner=(Spinner)view1.findViewById(R.id.spinner1);
+		ConfigureKeeper.saveSpinnerPos(this, spinner.getSelectedItemPosition());
+		super.onPause();
+	}
+
+
 }

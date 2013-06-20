@@ -9,4 +9,12 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_logout">注销账号</string>
 
+    <string name="poi0">B2094655D76BAAF9439B</string>
+    <string name="poi1">B2094757D06FA3FE409E</string>
+    <string name="poi2">B2094655D765AAFC4198</string>
+    <string name="poi3">B2094757D068A7F9429E</string>
+    <string name="poi4">B2094757D068A2FD4998</string>
+    <string name="poi5">B2094655D764A5FF479C</string>
+    <string name="poi6">B2094757D16EA2FD4292</string>
+    <string name="poi7">B2094757D06FA3FB499E</string>
 </resources>

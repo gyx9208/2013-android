@@ -54,30 +54,6 @@
             android:orientation="horizontal"
             android:showDividers="beginning|middle|end" >
 
-            <TableRow
-                android:id="@+id/RefreshTableRow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone" >
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" >
-
-                    <com.ant.liao.GifView
-                        android:id="@+id/RefreshView"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center_horizontal" />
-
-                </LinearLayout>
-
-            </TableRow>
-
-            <com.example.weibonju.WeiboDivider
-                android:id="@+id/RefreshDivider"
-                android:visibility="gone" />
 
             <TableRow
                 android:id="@+id/tableRow1"

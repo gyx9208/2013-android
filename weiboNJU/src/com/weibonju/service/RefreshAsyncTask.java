@@ -1,18 +1,18 @@
 package com.weibonju.service;
 
-import java.util.List;
+import java.util.ArrayList;
 import com.weibonju.data.SinglePost;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 
 /**
  * 单例模式，防止多次刷新
  * @author gyx
  *
  */
-public class RefreshAsyncTask extends AsyncTask<java.lang.Void, java.lang.Void, List<SinglePost>> {
-	
-	
+public class RefreshAsyncTask extends AsyncTask<String, java.lang.Void, ArrayList<SinglePost>> {
 
 	private static RefreshAsyncTask instance=null;
 	private static final int NUM=20;
@@ -58,8 +58,8 @@ public class RefreshAsyncTask extends AsyncTask<java.lang.Void, java.lang.Void, 
 	 * 预执行完毕后，下载内容
 	 */
 	@Override
-	protected List<SinglePost> doInBackground(Void... params) {
-		// TODO Auto-generated method stub
+	protected ArrayList<SinglePost> doInBackground(String... params) {
+		
 		return null;
 	}
 
@@ -67,9 +67,13 @@ public class RefreshAsyncTask extends AsyncTask<java.lang.Void, java.lang.Void, 
 	 * doInBackground执行完以后执行这段
 	 */
 	@Override
-	protected void onPostExecute(List<SinglePost> result) {
-		// TODO Auto-generated method stub
-		super.onPostExecute(result);
+	protected void onPostExecute(ArrayList<SinglePost> result) {
+		Message m=new Message();
+		m.what=1;
+		Bundle b=new Bundle();
+		b.putSerializable("list",result);
+		m.setData(b);
+		handler.sendMessage(m);
 	}
 	
 	/**
@@ -80,6 +84,5 @@ public class RefreshAsyncTask extends AsyncTask<java.lang.Void, java.lang.Void, 
 		// TODO Auto-generated method stub
 		super.onCancelled();
 	}
-	
 	
 }

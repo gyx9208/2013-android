@@ -1,12 +1,9 @@
 package com.weibonju.service;
 
-import com.example.weibonju.MainActivity;
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -56,7 +53,7 @@ public class RefreshWeiboService extends Service {
         			// TODO Auto-generated catch block
         			e.printStackTrace();
         		}
-        		MainActivity.handler.sendMessage(new Message());
+        		//MainActivity.handler.sendMessage(new Message());
                 Looper.prepare();  
                 Toast.makeText(RefreshWeiboService.this, "网络连接缓慢，请稍后再试", Toast.LENGTH_SHORT).show();  
                 Looper.loop();  
