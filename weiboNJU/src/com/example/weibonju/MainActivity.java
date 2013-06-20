@@ -265,6 +265,10 @@ public class MainActivity extends Activity {
 					RefreshUI(list);
 					RemoveRefreshViews();
 					break;
+				case 2://遇到Exception
+					RemoveRefreshViews();
+					Toast.makeText(MainActivity.this, "网络错误，请检查网络设置", Toast.LENGTH_SHORT).show();  
+					break;
 				}
 				RefreshAsyncTask.ReleaseInstance();
 			}

@@ -1,5 +1,7 @@
 package com.weibonju.service;
 
+import gyx.weibosdk.PoiTimelineAPI;
+
 import java.util.ArrayList;
 import com.weibonju.data.SinglePost;
 import android.os.AsyncTask;
@@ -54,13 +56,36 @@ public class RefreshAsyncTask extends AsyncTask<String, java.lang.Void, ArrayLis
 		super.onPreExecute();
 	}
 	
+	Thread timerThread;
 	/**
 	 * 预执行完毕后，下载内容
 	 */
 	@Override
 	protected ArrayList<SinglePost> doInBackground(String... params) {
-		
-		return null;
+		timerThread=new Thread(new Runnable(){
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(10000);
+					Message m=new Message();
+					m.what=0;
+					handler.sendMessage(m);
+				} catch (InterruptedException e) {
+				} 
+			}
+		});
+		timerThread.start();
+		String token=params[0];
+		String poi=params[1];
+		PoiTimelineAPI api=new PoiTimelineAPI();
+		ArrayList<SinglePost> list=null;
+		try {
+			list = api.getList(token, poi);
+		} catch (Exception e) {
+			e.printStackTrace();
+			list=null;
+		}
+		return list;
 	}
 
 	/**
@@ -68,12 +93,19 @@ public class RefreshAsyncTask extends AsyncTask<String, java.lang.Void, ArrayLis
 	 */
 	@Override
 	protected void onPostExecute(ArrayList<SinglePost> result) {
-		Message m=new Message();
-		m.what=1;
-		Bundle b=new Bundle();
-		b.putSerializable("list",result);
-		m.setData(b);
-		handler.sendMessage(m);
+		timerThread.interrupt();
+		if(result==null){
+			Message m=new Message();
+			m.what=2;
+			handler.sendMessage(m);
+		}else{
+			Message m=new Message();
+			m.what=1;
+			Bundle b=new Bundle();
+			b.putSerializable("list",result);
+			m.setData(b);
+			handler.sendMessage(m);
+		}
 	}
 	
 	/**
@@ -84,5 +116,4 @@ public class RefreshAsyncTask extends AsyncTask<String, java.lang.Void, ArrayLis
 		// TODO Auto-generated method stub
 		super.onCancelled();
 	}
-	
 }

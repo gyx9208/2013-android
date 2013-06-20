@@ -12,23 +12,23 @@ page 1 2 3……
 {
 	"statuses": [ 表示微博，一般是20个
 		{
-			"created_at": "Wed Jun 19 16:30:20 +0800 2013", 时间
-			"id": "3590941447573254", 微博ID
-			"mid": "3590941447573254", 同上
-			"idstr": "3590941447573254", 同上
-			"text": "@宁香Qing 我们在你母校 我在这里:http://t.cn/zlSSYfq", 文章内容 “我在这里这一段是客户端自己加的，可有可无”
-			"source": "<a href=\"http://app.weibo.com/t/feed/c66T5g\" rel=\"nofollow\">Android客户端</a>", 来自哪，我的微博估计就是weiboNJU
-			"favorited": false, 
-			"truncated": false, 
-			"in_reply_to_status_id": "", 
-			"in_reply_to_user_id": "", 
-			"in_reply_to_screen_name": "",  即使是转发的微博，这3条也都是空的，意义不明
-			"pic_ids": [  图片是在这里，如果有的话。 如果没图，下面3个字段是没有的。
-				"b205723cjw1e5sh1vl9zbj20da0hsjst"
-			],
-			"thumbnail_pic": "http://ww1.sinaimg.cn/thumbnail/b205723cjw1e5sh1vl9zbj20da0hsjst.jpg", 小图 无水印
-			"bmiddle_pic": "http://ww1.sinaimg.cn/bmiddle/b205723cjw1e5sh1vl9zbj20da0hsjst.jpg", 中图 有水印
-			"original_pic": "http://ww1.sinaimg.cn/large/b205723cjw1e5sh1vl9zbj20da0hsjst.jpg" 原图 有水印
+				"created_at": "Wed Jun 19 16:30:20 +0800 2013", 时间
+				"id": "3590941447573254", 微博ID
+				"mid": "3590941447573254", 同上
+				"idstr": "3590941447573254", 同上
+				"text": "@宁香Qing 我们在你母校 我在这里:http://t.cn/zlSSYfq", 文章内容 “我在这里这一段是客户端自己加的，可有可无”
+				"source": "<a href=\"http://app.weibo.com/t/feed/c66T5g\" rel=\"nofollow\">Android客户端</a>", 来自哪，我的微博估计就是weiboNJU
+				"favorited": false, 
+				"truncated": false, 
+				"in_reply_to_status_id": "", 
+				"in_reply_to_user_id": "", 
+				"in_reply_to_screen_name": "",  即使是转发的微博，这3条也都是空的，意义不明
+				"pic_ids": [  图片是在这里，如果有的话。 如果没图，下面3个字段是没有的。
+					"b205723cjw1e5sh1vl9zbj20da0hsjst"
+				],
+				"thumbnail_pic": "http://ww1.sinaimg.cn/thumbnail/b205723cjw1e5sh1vl9zbj20da0hsjst.jpg", 小图 无水印
+				"bmiddle_pic": "http://ww1.sinaimg.cn/bmiddle/b205723cjw1e5sh1vl9zbj20da0hsjst.jpg", 中图 有水印
+				"original_pic": "http://ww1.sinaimg.cn/large/b205723cjw1e5sh1vl9zbj20da0hsjst.jpg" 原图 有水印
 																								域名可以是ww1,ww2,ww3,ww4
 			, 
 			"geo": {		地理位置，无用
@@ -236,3 +236,34 @@ screenname     "user":"screen_name": "不学化学好多年"
     		"text NVARCHAR, reposts_count INTEGER, comments_count INTEGER, attitudes_count INTEGER, " +
     		"pic_ids VARCHAR, thumbnail_pic VARCHAR, source NVARCHAR, uid INTEGER, " +
     		"screen_name NVARCHAR, profile_image_url VARCHAR)"
+			
+			
+			"pic_ids": [
+					"b205723cjw1e5sh1vl9zbj20da0hsjst"
+				]
+			"pic_urls": [
+				{
+					"thumbnail_pic": "http://ww2.sinaimg.cn/thumbnail/6985922ejw1e5tglwq8k3j20jz0zjdhe.jpg"
+				},
+				{
+					"thumbnail_pic": "http://ww1.sinaimg.cn/thumbnail/6985922ejw1e5tgm0gmitj20jz0zjq5f.jpg"
+				},
+				{
+					"thumbnail_pic": "http://ww2.sinaimg.cn/thumbnail/6985922ejw1e5tgm22xtbj20jz0zjmz4.jpg"
+				},
+				{
+					"thumbnail_pic": "http://ww2.sinaimg.cn/thumbnail/6985922ejw1e5tgm9nltsj20jz0zjdi7.jpg"
+				},
+				{
+					"thumbnail_pic": "http://ww3.sinaimg.cn/thumbnail/6985922ejw1e5tgmbe42gj20jz0zjq53.jpg"
+				},
+				{
+					"thumbnail_pic": "http://ww4.sinaimg.cn/thumbnail/6985922ejw1e5tgmcyix9j20jz0zj40c.jpg"
+				},
+				{
+					"thumbnail_pic": "http://ww1.sinaimg.cn/thumbnail/6985922ejw1e5tgmem5v3j20jz0zjjt7.jpg"
+				}
+			],
+			"thumbnail_pic": "http://ww2.sinaimg.cn/thumbnail/6985922ejw1e5tglwq8k3j20jz0zjdhe.jpg",
+			"bmiddle_pic": "http://ww2.sinaimg.cn/bmiddle/6985922ejw1e5tglwq8k3j20jz0zjdhe.jpg",
+			"original_pic": "http://ww2.sinaimg.cn/large/6985922ejw1e5tglwq8k3j20jz0zjdhe.jpg",
