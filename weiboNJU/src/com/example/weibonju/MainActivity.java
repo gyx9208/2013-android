@@ -1,6 +1,7 @@
 package com.example.weibonju;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.ant.liao.GifView;
@@ -320,7 +321,42 @@ public class MainActivity extends Activity {
 
 	private void RefreshUI(ArrayList<SinglePost> list) {
 		// TODO Auto-generated method stub
+		TableLayout t=(TableLayout)view1.findViewById(R.id.MainTable);
+		int length=t.getChildCount();
+		for(int i=2;i<length-1;i++){
+			t.removeViewAt(2);
+		}
+		for(int i=0;i<list.size();i++){
+			SinglePost p=list.get(i);
+			insertPost(p,2+i*2);
+		}
+	}
+
+	private void insertPost(SinglePost p, int i) {
+		WeiboText w=new WeiboText(this);
 		
+		TextView name=(TextView) w.findViewById(R.id.nameText);
+		name.setText(p.getScreen_name());
+		TextView repost=(TextView) w.findViewById(R.id.numOfComAndTrans);
+		repost.setText("评论 "+p.getComments_count()+" 转发 "+p.getReposts_count());
+		TextView main=(TextView) w.findViewById(R.id.mainWeibo);
+		main.setText(p.getText());
+		
+		TextView date=(TextView) w.findViewById(R.id.dateText);
+		Date d=p.getCreated_at();
+		Date now=new Date();
+		int min=(int) ((now.getTime()-d.getTime())/60000);
+		if(min<60)
+			date.setText(min+"分钟前");
+		else
+		{
+			
+		
+		}
+		TableLayout t=(TableLayout)view1.findViewById(R.id.MainTable);
+		WeiboDivider di=new WeiboDivider(this);
+		t.addView(di,i);
+		t.addView(w,i);
 	}
 
 	@Override
