@@ -17,7 +17,8 @@ import android.os.Message;
 public class RefreshAsyncTask extends AsyncTask<String, java.lang.Void, ArrayList<SinglePost>> {
 
 	private static RefreshAsyncTask instance=null;
-	private static final int NUM=20;
+	private int NUM=20;
+	private int WAITETIME=10000;
 	private Handler handler;
 	
 	/**
@@ -66,7 +67,7 @@ public class RefreshAsyncTask extends AsyncTask<String, java.lang.Void, ArrayLis
 			@Override
 			public void run() {
 				try {
-					Thread.sleep(10000);
+					Thread.sleep(WAITETIME);
 					Message m=new Message();
 					m.what=0;
 					handler.sendMessage(m);

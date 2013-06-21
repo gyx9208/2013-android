@@ -3,12 +3,8 @@ package com.weibonju.service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.lang.ref.SoftReference;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -24,9 +20,13 @@ public class AsyncImageLoader {
 	
 	private ExecutorService executorService = Executors.newFixedThreadPool(5);
 	private final Handler handler=new Handler();
+	private final Resources res;
 	
+	public AsyncImageLoader(Resources res){
+		this.res=res;
+	}
 	
-	public Drawable loadDrawable(final String imageUrl,final String fileName,final Resources res, final ImageCallback callback) {
+	public Drawable loadDrawable(final String imageUrl,final String fileName, final ImageCallback callback) {
         //如果存储里有就从Internal Storage中取出数据
 		final File f=new File(FILEDIR,fileName);
         if (f.exists()) {

@@ -14,6 +14,7 @@ import com.weibonju.action.impl.AccountMatter;
 import com.weibonju.configure.ConfigureKeeper;
 import com.weibonju.configure.WeiboContext;
 import com.weibonju.data.SinglePost;
+import com.weibonju.service.AsyncImageLoader;
 import com.weibonju.service.RefreshAsyncTask;
 
 import android.os.AsyncTask;
@@ -27,6 +28,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -43,6 +45,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -64,8 +67,6 @@ public class MainActivity extends Activity {
 	private int viewNum=4;
 	private int bmpW;
 	private View view1,view2,view3,view4;
-
-	
 
     public static final String TAG = "weibo-gyx";
 	
@@ -279,6 +280,7 @@ public class MainActivity extends Activity {
 	}
 	
 	private Handler refreshHandler;
+	private AsyncImageLoader imgLoader;
 	
 	@SuppressLint("HandlerLeak")
 	private void InitRefreshFunction() {
@@ -306,7 +308,7 @@ public class MainActivity extends Activity {
 				RefreshAsyncTask.ReleaseInstance();
 			}
 		};
-		
+		imgLoader=new AsyncImageLoader(this.getResources());
 		ImageView refreshButton=(ImageView)view1.findViewById(R.id.refreshButton);
 		refreshButton.setOnClickListener(new OnClickListener(){
 			@Override
@@ -363,14 +365,17 @@ public class MainActivity extends Activity {
 
 	private void insertPost(SinglePost p, int i) {
 		WeiboText w=new WeiboText(this);
-		
+		//名字
 		TextView name=(TextView) w.findViewById(R.id.nameText);
 		name.setText(p.getScreen_name());
+		//评论和转发
 		TextView repost=(TextView) w.findViewById(R.id.numOfComAndTrans);
 		repost.setText("评论 "+p.getComments_count()+" 转发 "+p.getReposts_count());
+		//本体
 		TextView main=(TextView) w.findViewById(R.id.mainWeibo);
 		main.setText(p.getText());
 		
+		//日期
 		TextView date=(TextView) w.findViewById(R.id.dateText);
 		Date d=p.getCreated_at();
 		Date now=new Date();
@@ -389,9 +394,11 @@ public class MainActivity extends Activity {
 			}
 		}
 		
+		//来自
 		TextView from=(TextView) w.findViewById(R.id.fromText);
 		from.setText("来自："+p.getSource());
 		
+		//赞
 		TextView atti=(TextView) w.findViewById(R.id.attitudesText);
 		if(p.getAttitudes_count()==0)
 			atti.setText("赞+1");
@@ -401,12 +408,55 @@ public class MainActivity extends Activity {
 			atti.setTextColor(csl);
 		}
 		
+		//头像
+		ImageView head=(ImageView) w.findViewById(R.id.headImage);
+		loadImage(p.getProfile_image_url().toString(),String.valueOf(p.getUid()),head);
 		
+		//配图
+		if(p.getPic_ids().length()>0){
+			String[] pics=p.getPic_ids().split(",");
+			if(pics.length==1){
+				//一张图
+				ImageView imgView=(ImageView) w.findViewById(R.id.weiboImg);
+				imgView.setVisibility(View.VISIBLE);
+				String url="http://ww1.sinaimg.cn/thumbnail/"+pics[0];
+				loadImage(url,pics[0],imgView);
+			}else{
+				//N张图
+				LinearLayout ImgContainer=(LinearLayout) w.findViewById(R.id.ImgGridView);
+				ImgContainer.setVisibility(View.VISIBLE);
+				int setid=0;
+				for(int index=1;index<=pics.length;index++){
+					if(index%3==1){
+						setid++;
+						int setRid=this.getResources().getIdentifier("imgset"+setid, "id", "com.example.weibonju");
+						LinearLayout set=(LinearLayout) w.findViewById(setRid);
+						set.setVisibility(View.VISIBLE);
+					}
+					int imgRid=this.getResources().getIdentifier("img"+index, "id", "com.example.weibonju");
+					ImageView imgView=(ImageView) w.findViewById(imgRid);
+					imgView.setVisibility(View.VISIBLE);
+					String url="http://ww1.sinaimg.cn/thumbnail/"+pics[index-1];
+					loadImage(url,pics[index-1],imgView);
+				}
+			}
+		}
 		
 		TableLayout t=(TableLayout)view1.findViewById(R.id.MainTable);
 		WeiboDivider di=new WeiboDivider(this);
 		t.addView(di,i);
 		t.addView(w,i);
+	}
+	
+	private void loadImage(final String url,final String fileName, final ImageView view){
+		Drawable drawable = imgLoader.loadDrawable(url,fileName, new AsyncImageLoader.ImageCallback() {
+            public void imageLoaded(Drawable imageDrawable) {
+              view.setImageDrawable(imageDrawable);
+            }
+        });
+       if(drawable!=null){
+    	   view.setImageDrawable(drawable);
+       }
 	}
 
 	@Override

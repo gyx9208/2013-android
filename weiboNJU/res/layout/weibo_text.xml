@@ -52,7 +52,7 @@
             android:layout_marginTop="5dp"
             android:text="@string/t0"
             android:textColor="@color/black"
-            android:textSize="@dimen/large_text" />
+            android:textSize="17sp" />
 
         <ImageView
             android:id="@+id/weiboImg"
@@ -63,7 +63,7 @@
             android:maxHeight="200dp"
             android:maxWidth="200dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/h"
+            android:src="@drawable/default_pic"
             android:visibility="gone" />
 
         <LinearLayout
