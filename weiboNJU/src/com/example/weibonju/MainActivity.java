@@ -1,5 +1,7 @@
 package com.example.weibonju;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -20,7 +22,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.support.v4.view.PagerAdapter;
@@ -75,8 +79,41 @@ public class MainActivity extends Activity {
         InitSpinner();
         InitRefreshFunction();
         LoadInfo();
+        //test();
     }
 
+    private void test(){
+    	String FILENAME = "hello_file";
+    	String string = "hello world!";
+    	try{
+    		FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+	    	fos.write(string.getBytes());
+	    	fos.close();
+	    	
+	    	FileInputStream fis = openFileInput(FILENAME);
+	    	byte[] input = new byte[fis.available()];
+	    	while(fis.read(input) != -1){}
+	    	String str = new String(input);
+	    	fis.close();
+	    	System.out.println(str);
+	    	System.out.println(this.getFilesDir().getAbsolutePath());
+	    	StringBuilder ss=new StringBuilder();
+	    	for(String s:this.fileList()){
+	    		ss.append(s);
+	    	}
+	    	System.out.println(ss.toString());
+	    	this.deleteFile(FILENAME);
+	    	ss=new StringBuilder();
+	    	for(String s:this.getFilesDir().list()){
+	    		ss.append(s);
+	    	}
+	    	System.out.println(ss.toString());
+	    	
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    	
+    }
     /**
      *  加载之前浏览的页面，加载数据库中的内容
      */
@@ -351,6 +388,20 @@ public class MainActivity extends Activity {
 				date.setText(cal.get(Calendar.MONTH)+"月"+cal.get(Calendar.DAY_OF_MONTH)+"日 "+cal.get(Calendar.HOUR_OF_DAY)+":"+cal.get(Calendar.MINUTE));
 			}
 		}
+		
+		TextView from=(TextView) w.findViewById(R.id.fromText);
+		from.setText("来自："+p.getSource());
+		
+		TextView atti=(TextView) w.findViewById(R.id.attitudesText);
+		if(p.getAttitudes_count()==0)
+			atti.setText("赞+1");
+		else{
+			atti.setText("赞"+p.getAttitudes_count());
+			ColorStateList csl =this.getResources().getColorStateList(R.color.lightcoral);
+			atti.setTextColor(csl);
+		}
+		
+		
 		
 		TableLayout t=(TableLayout)view1.findViewById(R.id.MainTable);
 		WeiboDivider di=new WeiboDivider(this);
