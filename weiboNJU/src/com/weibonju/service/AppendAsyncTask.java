@@ -101,6 +101,9 @@ public class AppendAsyncTask extends AsyncTask<String, java.lang.Void, ArrayList
 	@Override
 	protected void onCancelled() {
 		super.onCancelled();
-		timerThread.interrupt();
+		if (timerThread!=null && timerThread.isAlive()){
+			timerThread.interrupt();
+			timerThread=null;
+		}
 	}
 }

@@ -1,39 +1,26 @@
 package com.example.weibonju;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import com.ant.liao.GifView;
-import com.ant.liao.GifView.GifImageType;
-import com.weibonju.action.IAccountMatter;
-import com.weibonju.action.impl.AccountMatter;
-import com.weibonju.configure.ConfigureKeeper;
-import com.weibonju.configure.WeiboContext;
-import com.weibonju.data.SinglePost;
-import com.weibonju.service.AppendAsyncTask;
-import com.weibonju.service.AsyncImageLoader;
-import com.weibonju.service.RefreshAsyncTask;
-
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,11 +34,24 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.ant.liao.GifView;
+import com.ant.liao.GifView.GifImageType;
+import com.weibonju.action.IAccountMatter;
+import com.weibonju.action.impl.AccountMatter;
+import com.weibonju.configure.ConfigureKeeper;
+import com.weibonju.configure.WeiboContext;
+import com.weibonju.data.PostsDB;
+import com.weibonju.data.SinglePost;
+import com.weibonju.service.AppendAsyncTask;
+import com.weibonju.service.AsyncImageLoader;
+import com.weibonju.service.RefreshAsyncTask;
 
 /**
  * 主界面
@@ -69,7 +69,7 @@ public class MainActivity extends Activity {
 	private int viewNum=4;
 	private int bmpW;
 	private View view1,view2,view3,view4;
-
+	private ArrayList<SinglePost> nowList;
     public static final String TAG = "weibo-gyx";
 	
     @Override
@@ -84,12 +84,18 @@ public class MainActivity extends Activity {
         LoadInfo();
     }
 
-    /**
+	/**
      *  加载之前浏览的页面，加载数据库中的内容
      */
 	private void LoadInfo() {
 		Spinner spinner=(Spinner)view1.findViewById(R.id.spinner1);
 		spinner.setSelection(ConfigureKeeper.readSpinnerPos(this));
+		PostsDB db=new PostsDB(this);
+		nowList=db.getALL();
+		for(int i=0;i<nowList.size();i++){
+			SinglePost p=nowList.get(i);
+			insertPost(p,i*2,false);
+		}
 	}
 
 	/**
@@ -103,17 +109,15 @@ public class MainActivity extends Activity {
 		spinner.setOnItemSelectedListener(new SpinnerSelectedListener());
 	}
 	
-	class SpinnerSelectedListener implements OnItemSelectedListener{  
+	class SpinnerSelectedListener implements OnItemSelectedListener{
+		int start=0;
         public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
                 long arg3) {
-        	if(refreshTask!=null && refreshTask.getStatus()==AsyncTask.Status.RUNNING){
-        		refreshTask.cancel(true);
-        		refreshTask=null;
-        		RefreshAsyncTask.ReleaseInstance();
-        		RemoveRefreshViews();
+        	if(start==0){
+        		start=1;
+        		return;
         	}
-        	if(appendTask!=null && appendTask.getStatus()==AsyncTask.Status.RUNNING)
-        		appendTask.cancel(true);
+        	finishAction();
         	StartRefreshAction();
         }  
   
@@ -144,7 +148,6 @@ public class MainActivity extends Activity {
 	}
 	
 	private void InitTextView() {
-		// TODO Auto-generated method stub
 		textView1 = (TextView) findViewById(R.id.text1);  
         textView2 = (TextView) findViewById(R.id.text2);  
         textView3 = (TextView) findViewById(R.id.text3);  
@@ -236,12 +239,9 @@ public class MainActivity extends Activity {
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
 		super.onOptionsItemSelected(item);
 		switch(item.getItemId())
         {
-        case R.id.menu_settings:
-            break;
         case R.id.menu_logout:
         	logout();
             break;
@@ -253,13 +253,25 @@ public class MainActivity extends Activity {
 	}
 
 	private void clearInternalStorage() {
+		Toast.makeText(this, "头像、图片和缓存已经清空", Toast.LENGTH_SHORT).show();
+		finishAction();
+		TableLayout t=(TableLayout)view1.findViewById(R.id.MainTable);
+		int length=t.getChildCount();
+		for(int i=0;i<length-1;i++){
+			t.removeViewAt(0);
+		}
+		nowList.clear();
+		PostsDB db=new PostsDB(this);
+		db.clear();
 		for(String fn:this.fileList()){
 			this.deleteFile(fn);
-		}
-		Toast.makeText(this, "头像和图片已经清空", Toast.LENGTH_SHORT);
+		}	
 	}
 
 	private void logout() {
+		finishAction();
+		nowList.clear();
+		saveConfigure();
 		IAccountMatter acc=new AccountMatter(this,(WeiboContext)getApplication());
 		acc.logout();
 		Intent intent=new Intent(MainActivity.this,WelcomeActivity.class);
@@ -268,6 +280,7 @@ public class MainActivity extends Activity {
 	}
 	
 	private Handler refreshHandler;
+	private Handler appendHandler;
 	private AsyncImageLoader imgLoader;
 	
 	@SuppressLint("HandlerLeak")
@@ -278,10 +291,11 @@ public class MainActivity extends Activity {
 			public void handleMessage(Message msg) {
 				switch(msg.what){
 				case 0://网络太慢，10秒内没有接到数据
-					refreshTask.cancel(true);
-					RemoveRefreshViews();
-					Toast.makeText(MainActivity.this, "网络连接缓慢，请稍后再试", Toast.LENGTH_SHORT).show();  
-					break;
+					if(refreshTask!=null){
+						refreshTask.cancel(true);
+						RemoveRefreshViews();
+						Toast.makeText(MainActivity.this, "网络连接缓慢，请稍后再试", Toast.LENGTH_SHORT).show();  
+					}break;
 				case 1://接到完整的数据了
 					Bundle b=msg.getData();
 					@SuppressWarnings("unchecked")
@@ -296,6 +310,33 @@ public class MainActivity extends Activity {
 				}
 				RefreshAsyncTask.ReleaseInstance();
 				refreshTask=null;
+			}
+		};
+		appendHandler=new Handler(){
+			@Override
+			public void handleMessage(Message msg) {
+				switch(msg.what){
+				case 0://网络太慢，10秒内没有接到数据
+					if(appendTask!=null){
+						appendTask.cancel(true);
+						RemoveAppendViews();
+						Toast.makeText(MainActivity.this, "网络连接缓慢，请稍后再试", Toast.LENGTH_SHORT).show();  
+					}
+					break;
+				case 1://接到完整的数据了
+					Bundle b=msg.getData();
+					@SuppressWarnings("unchecked")
+					ArrayList<SinglePost> list=(ArrayList<SinglePost>)b.get("list");
+					RefreshAppendUI(list);
+					RemoveAppendViews();
+					break;
+				case 2://遇到Exception
+					RemoveAppendViews();
+					Toast.makeText(MainActivity.this, "网络错误，请检查网络设置", Toast.LENGTH_SHORT).show();  
+					break;
+				}
+				AppendAsyncTask.ReleaseInstance();
+				appendTask=null;
 			}
 		};
 		imgLoader=new AsyncImageLoader(this.getResources());
@@ -316,9 +357,8 @@ public class MainActivity extends Activity {
 		});
 	}
 	
-
-	private RefreshAsyncTask refreshTask;
-	private AppendAsyncTask appendTask;
+	private RefreshAsyncTask refreshTask=null;
+	private AppendAsyncTask appendTask=null;
 	
 	private void StartRefreshAction(){
 		refreshTask=RefreshAsyncTask.getInstance(refreshHandler);
@@ -331,6 +371,8 @@ public class MainActivity extends Activity {
 			gif.setGifImage(R.drawable.l2);
 			t.addView(d, 0);
 			t.addView(r, 0);
+			ScrollView scroll=(ScrollView) view1.findViewById(R.id.scrollView1);
+			scroll.scrollTo(0, 0);
 			
 			Spinner spinner=(Spinner)view1.findViewById(R.id.spinner1);
 			int pos=spinner.getSelectedItemPosition();
@@ -343,11 +385,49 @@ public class MainActivity extends Activity {
 		//startService(intent);
 	}
 	
+	private void StartAppendAction() {
+		if(refreshTask != null && refreshTask.getStatus() == AsyncTask.Status.RUNNING){
+			Toast.makeText(this, "正在刷新全局，请稍后再请求更多微博", Toast.LENGTH_LONG).show();
+		}else{
+			appendTask=AppendAsyncTask.getInstance(appendHandler);
+			if(appendTask!=null && appendTask.getStatus() != AsyncTask.Status.RUNNING){
+				TableLayout table=(TableLayout) view1.findViewById(R.id.MainTable);
+				String max;
+				if(table.getChildCount()==1)
+					max="0";
+				else{
+					int index=table.getChildCount()-3;
+					View v=table.getChildAt(index);
+					max=(String) v.getTag();
+				}
+				
+				TableRow row=(TableRow) view1.findViewById(R.id.tableRowMore);
+				GifView gif=new GifView(this);
+				gif.setGifImageType(GifImageType.COVER);
+				gif.setGifImage(R.drawable.l2);
+				row.addView(gif);
+				
+				Spinner spinner=(Spinner)view1.findViewById(R.id.spinner1);
+				int pos=spinner.getSelectedItemPosition();
+				int id=this.getResources().getIdentifier("poi"+pos, "string", "com.example.weibonju");
+				String poi=this.getResources().getString(id);
+				String token=((WeiboContext)this.getApplication()).getAccessToken().getToken();
+				
+				appendTask.execute(new String[]{token,poi,max});
+			}
+		}
+	}
+	
 	private void RemoveRefreshViews() {
 		//stopService(new Intent(MainActivity.this, RefreshWeiboService.class));
 		TableLayout t=(TableLayout)view1.findViewById(R.id.MainTable);
 		t.removeViewAt(0);
 		t.removeViewAt(0);
+	}
+	
+	private void RemoveAppendViews() {
+		TableRow row=(TableRow) view1.findViewById(R.id.tableRowMore);
+		row.removeViewAt(1);
 	}
 
 	private void RefreshUI(ArrayList<SinglePost> list) {
@@ -356,16 +436,27 @@ public class MainActivity extends Activity {
 		for(int i=2;i<length-1;i++){
 			t.removeViewAt(2);
 		}
+		nowList.clear();
 		for(int i=0;i<list.size();i++){
 			SinglePost p=list.get(i);
-			insertPost(p,2+i*2);
+			nowList.add(p);
+			insertPost(p,2+i*2,true);
 		}
-		
+	}
+	
+	private void RefreshAppendUI(ArrayList<SinglePost> list) {
+		TableLayout t=(TableLayout)view1.findViewById(R.id.MainTable);
+		int start=t.getChildCount()-1;
+		for(int i=0;i<list.size();i++){
+			SinglePost p=list.get(i);
+			nowList.add(p);
+			insertPost(p,start+i*2,true);
+		}
 	}
 
-	private void insertPost(SinglePost p, int i) {
+	private void insertPost(SinglePost p, int i ,boolean ifNet) {
 		WeiboText w=new WeiboText(this);
-		w.setTag(p.getPid());
+		w.setTag(String.valueOf(p.getPid()));
 		//名字
 		TextView name=(TextView) w.findViewById(R.id.nameText);
 		name.setText(p.getScreen_name());
@@ -417,7 +508,7 @@ public class MainActivity extends Activity {
 		
 		//头像
 		ImageView head=(ImageView) w.findViewById(R.id.headImage);
-		loadImage(p.getProfile_image_url().toString(),String.valueOf(p.getUid()),head);
+		loadImage(ifNet,p.getProfile_image_url().toString(),String.valueOf(p.getUid()),head);
 		
 		//配图
 		if(p.getPic_ids().length()>0){
@@ -427,7 +518,7 @@ public class MainActivity extends Activity {
 				ImageView imgView=(ImageView) w.findViewById(R.id.weiboImg);
 				imgView.setVisibility(View.VISIBLE);
 				String url="http://ww1.sinaimg.cn/bmiddle/"+pics[0];
-				loadImage(url,pics[0],imgView);
+				loadImage(ifNet,url,pics[0],imgView);
 			}else{
 				//N张图
 				LinearLayout ImgContainer=(LinearLayout) w.findViewById(R.id.ImgGridView);
@@ -444,7 +535,7 @@ public class MainActivity extends Activity {
 					ImageView imgView=(ImageView) w.findViewById(imgRid);
 					imgView.setVisibility(View.VISIBLE);
 					String url="http://ww1.sinaimg.cn/bmiddle/"+pics[index-1];
-					loadImage(url,pics[index-1],imgView);
+					loadImage(ifNet,url,pics[index-1],imgView);
 				}
 			}
 		}
@@ -455,8 +546,8 @@ public class MainActivity extends Activity {
 		t.addView(w,i);
 	}
 	
-	private void loadImage(final String url,final String fileName, final ImageView view){
-		Drawable drawable = imgLoader.loadDrawable(url,fileName, new AsyncImageLoader.ImageCallback() {
+	private void loadImage(boolean ifNet,String url,String fileName, final ImageView view){
+		Drawable drawable = imgLoader.loadDrawable(ifNet,url,fileName, new AsyncImageLoader.ImageCallback() {
             public void imageLoaded(Drawable imageDrawable) {
               view.setImageDrawable(imageDrawable);
             }
@@ -468,14 +559,38 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onPause() {
-		Spinner spinner=(Spinner)view1.findViewById(R.id.spinner1);
-		ConfigureKeeper.saveSpinnerPos(this, spinner.getSelectedItemPosition());
+		finishAction();
+		saveConfigure();
 		super.onPause();
 	}
 	
-	
-	private void StartAppendAction() {
-		
+	private void saveConfigure() {
+		Spinner spinner=(Spinner)view1.findViewById(R.id.spinner1);
+		ConfigureKeeper.saveSpinnerPos(this, spinner.getSelectedItemPosition());
+		PostsDB db=new PostsDB(this);
+		db.saveAll(nowList);
+	}
+
+	private void finishAction(){
+		if(refreshTask!=null && refreshTask.getStatus()==AsyncTask.Status.RUNNING){
+    		refreshTask.cancel(true);
+    		refreshTask=null;
+    		RefreshAsyncTask.ReleaseInstance();
+    		RemoveRefreshViews();
+    	}
+    	if(appendTask!=null && appendTask.getStatus()==AsyncTask.Status.RUNNING){
+    		appendTask.cancel(true);
+    		appendTask=null;
+    		AppendAsyncTask.ReleaseInstance();
+    		RemoveAppendViews();
+    	}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		imgLoader.shutDown();
+		Log.d(TAG, "Destroy");
 	}
 
 }
