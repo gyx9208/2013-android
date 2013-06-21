@@ -1,19 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/RefreshTableRow"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center" >
     
 	<LinearLayout
-	    android:layout_width="match_parent"
+	    android:id="@+id/GifViewContainer"
+	    android:layout_width="fill_parent"
 	    android:layout_height="wrap_content"
-	    android:orientation="vertical" >
+	    android:layout_gravity="center_horizontal"
+	    android:gravity="center_horizontal"
+	    android:orientation="horizontal" >
 
     	<com.ant.liao.GifView
-        	android:id="@+id/RefreshView"
-        	android:layout_width="50dp"
-       		android:layout_height="50dp"
-       		android:layout_gravity="center_horizontal" />
+    	    android:id="@+id/RefreshView"
+    	    android:layout_width="50dp"
+    	    android:layout_height="50dp"
+    	    android:layout_gravity="center_horizontal"
+    	    android:layout_marginLeft="50dp" />
+
+    	<TextView
+    	    android:id="@+id/textView1"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    android:layout_gravity="center"
+    	    android:layout_marginLeft="30dp"
+    	    android:text="正在更新,请稍候"
+    	    android:textSize="@dimen/middle_text" />
 
 	</LinearLayout>
 </TableRow>

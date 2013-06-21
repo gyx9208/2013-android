@@ -1,6 +1,7 @@
 package com.example.weibonju;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -304,8 +305,6 @@ public class MainActivity extends Activity {
 			int id=this.getResources().getIdentifier("poi"+pos, "string", "com.example.weibonju");
 			String poi=this.getResources().getString(id);
 			String token=((WeiboContext)this.getApplication()).getAccessToken().getToken();
-			Log.e(TAG, poi);
-			Log.e(TAG, token);
 			refreshTask.execute(new String[]{token,poi});
 		}
 		//Intent intent=new Intent(MainActivity.this,RefreshWeiboService.class);
@@ -320,7 +319,6 @@ public class MainActivity extends Activity {
 	}
 
 	private void RefreshUI(ArrayList<SinglePost> list) {
-		// TODO Auto-generated method stub
 		TableLayout t=(TableLayout)view1.findViewById(R.id.MainTable);
 		int length=t.getChildCount();
 		for(int i=2;i<length-1;i++){
@@ -350,9 +348,16 @@ public class MainActivity extends Activity {
 			date.setText(min+"分钟前");
 		else
 		{
-			
-		
+			Calendar cal=Calendar.getInstance();
+			cal.setTime(d);
+			Calendar calnow=Calendar.getInstance();
+			if((cal.get(Calendar.YEAR)==calnow.get(Calendar.YEAR)) && (cal.get(Calendar.MONTH)==calnow.get(Calendar.MONTH)) && (cal.get(Calendar.DATE)==calnow.get(Calendar.DATE))){
+				date.setText("今天"+cal.get(Calendar.HOUR_OF_DAY)+":"+cal.get(Calendar.MINUTE));
+			}else{
+				date.setText(cal.get(Calendar.MONTH)+"月"+cal.get(Calendar.DAY_OF_MONTH)+"日 "+cal.get(Calendar.HOUR_OF_DAY)+":"+cal.get(Calendar.MINUTE));
+			}
 		}
+		
 		TableLayout t=(TableLayout)view1.findViewById(R.id.MainTable);
 		WeiboDivider di=new WeiboDivider(this);
 		t.addView(di,i);
@@ -366,6 +371,5 @@ public class MainActivity extends Activity {
 		ConfigureKeeper.saveSpinnerPos(this, spinner.getSelectedItemPosition());
 		super.onPause();
 	}
-
 
 }

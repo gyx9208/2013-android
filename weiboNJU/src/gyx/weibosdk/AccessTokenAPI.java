@@ -26,7 +26,6 @@ public class AccessTokenAPI {
 				"&code="+code+"&redirect_uri="+Constants.REDIRECT_URL);
 		out.flush();  
         out.close();
-        System.out.println("3");
         String sCurrentLine;  
         String sTotalString;  
         sCurrentLine = "";  
@@ -38,12 +37,10 @@ public class AccessTokenAPI {
         while ((sCurrentLine = l_reader.readLine()) != null) {  
             sTotalString += sCurrentLine;  
         }
-        System.out.println("4");
         JSONObject o=new JSONObject(sTotalString);
         String access_token=o.getString("access_token");
         String expires_in=o.getString("expires_in");
         
-        System.out.println(access_token+" "+expires_in);
         Oauth2AccessToken token =new Oauth2AccessToken(access_token, expires_in);
 		return token;
 	}

@@ -16,6 +16,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="5dp"
             android:contentDescription="location icon"
+            android:onClick="test()"
             android:src="@drawable/earth" />
 
         <LinearLayout
@@ -50,55 +51,13 @@
         <TableLayout
             android:id="@+id/MainTable"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="horizontal"
-            android:showDividers="beginning|middle|end" >
-
-
-            <TableRow
-                android:id="@+id/tableRow1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:showDividers="beginning|end" >
-
-                <com.example.weibonju.WeiboText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-
-				</com.example.weibonju.WeiboText>
-            </TableRow>
-
-            <com.example.weibonju.WeiboDivider />
-
-            <TableRow
-                android:id="@+id/tableRow2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
-				<com.example.weibonju.WeiboText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-
-				</com.example.weibonju.WeiboText>
-            </TableRow>
-            <com.example.weibonju.WeiboDivider />
-
-            <TableRow
-                android:id="@+id/tableRow3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
-				<com.example.weibonju.WeiboText
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-
-				</com.example.weibonju.WeiboText>
-
-            </TableRow>
-            <com.example.weibonju.WeiboDivider />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
 
             <TableRow
                 android:id="@+id/tableRowMore"
                 android:layout_width="fill_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:showDividers="beginning" >
