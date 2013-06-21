@@ -32,7 +32,8 @@
                 android:layout_weight="1"
                 android:text="董爷威霸"
                 android:textColor="@color/darkgreen"
-                android:textSize="@dimen/middle_text" />
+                android:textSize="@dimen/middle_text"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/numOfComAndTrans"
@@ -49,7 +50,7 @@
             android:id="@+id/mainWeibo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="3dp"
             android:text="@string/t0"
             android:textColor="@color/black"
             android:textSize="17sp" />
@@ -228,7 +229,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="今天17:48"
-                android:textColor="@color/orange"
+                android:textColor="@color/steelblue"
                 android:textSize="@dimen/small_text" />
 
             <TextView

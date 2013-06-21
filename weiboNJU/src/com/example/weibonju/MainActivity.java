@@ -14,6 +14,7 @@ import com.weibonju.action.impl.AccountMatter;
 import com.weibonju.configure.ConfigureKeeper;
 import com.weibonju.configure.WeiboContext;
 import com.weibonju.data.SinglePost;
+import com.weibonju.service.AppendAsyncTask;
 import com.weibonju.service.AsyncImageLoader;
 import com.weibonju.service.RefreshAsyncTask;
 
@@ -48,6 +49,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,41 +82,8 @@ public class MainActivity extends Activity {
         InitSpinner();
         InitRefreshFunction();
         LoadInfo();
-        //test();
     }
 
-    private void test(){
-    	String FILENAME = "hello_file";
-    	String string = "hello world!";
-    	try{
-    		FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-	    	fos.write(string.getBytes());
-	    	fos.close();
-	    	
-	    	FileInputStream fis = openFileInput(FILENAME);
-	    	byte[] input = new byte[fis.available()];
-	    	while(fis.read(input) != -1){}
-	    	String str = new String(input);
-	    	fis.close();
-	    	System.out.println(str);
-	    	System.out.println(this.getFilesDir().getAbsolutePath());
-	    	StringBuilder ss=new StringBuilder();
-	    	for(String s:this.fileList()){
-	    		ss.append(s);
-	    	}
-	    	System.out.println(ss.toString());
-	    	this.deleteFile(FILENAME);
-	    	ss=new StringBuilder();
-	    	for(String s:this.getFilesDir().list()){
-	    		ss.append(s);
-	    	}
-	    	System.out.println(ss.toString());
-	    	
-    	}catch(Exception e){
-    		e.printStackTrace();
-    	}
-    	
-    }
     /**
      *  加载之前浏览的页面，加载数据库中的内容
      */
@@ -136,7 +105,16 @@ public class MainActivity extends Activity {
 	
 	class SpinnerSelectedListener implements OnItemSelectedListener{  
         public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,  
-                long arg3) {  
+                long arg3) {
+        	if(refreshTask!=null && refreshTask.getStatus()==AsyncTask.Status.RUNNING){
+        		refreshTask.cancel(true);
+        		refreshTask=null;
+        		RefreshAsyncTask.ReleaseInstance();
+        		RemoveRefreshViews();
+        	}
+        	if(appendTask!=null && appendTask.getStatus()==AsyncTask.Status.RUNNING)
+        		appendTask.cancel(true);
+        	StartRefreshAction();
         }  
   
         public void onNothingSelected(AdapterView<?> arg0) {  
@@ -267,8 +245,18 @@ public class MainActivity extends Activity {
         case R.id.menu_logout:
         	logout();
             break;
+        case R.id.menu_clear:
+        	clearInternalStorage();
+        	break;
         }
 		return true;
+	}
+
+	private void clearInternalStorage() {
+		for(String fn:this.fileList()){
+			this.deleteFile(fn);
+		}
+		Toast.makeText(this, "头像和图片已经清空", Toast.LENGTH_SHORT);
 	}
 
 	private void logout() {
@@ -284,6 +272,7 @@ public class MainActivity extends Activity {
 	
 	@SuppressLint("HandlerLeak")
 	private void InitRefreshFunction() {
+		//refresh刷新
 		refreshHandler=new Handler(){
 			@Override
 			public void handleMessage(Message msg) {
@@ -306,6 +295,7 @@ public class MainActivity extends Activity {
 					break;
 				}
 				RefreshAsyncTask.ReleaseInstance();
+				refreshTask=null;
 			}
 		};
 		imgLoader=new AsyncImageLoader(this.getResources());
@@ -316,10 +306,19 @@ public class MainActivity extends Activity {
 				StartRefreshAction();
 			}
 		});
+		//append刷新
+		TableRow more=(TableRow) view1.findViewById(R.id.tableRowMore);
+		more.setOnClickListener(new OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				StartAppendAction();
+			}
+		});
 	}
 	
 
 	private RefreshAsyncTask refreshTask;
+	private AppendAsyncTask appendTask;
 	
 	private void StartRefreshAction(){
 		refreshTask=RefreshAsyncTask.getInstance(refreshHandler);
@@ -361,13 +360,21 @@ public class MainActivity extends Activity {
 			SinglePost p=list.get(i);
 			insertPost(p,2+i*2);
 		}
+		
 	}
 
 	private void insertPost(SinglePost p, int i) {
 		WeiboText w=new WeiboText(this);
+		w.setTag(p.getPid());
 		//名字
 		TextView name=(TextView) w.findViewById(R.id.nameText);
 		name.setText(p.getScreen_name());
+		
+		String gender=p.getGender();
+		if(gender.equals("f")){
+			ColorStateList csl =this.getResources().getColorStateList(R.color.darkorange);
+			name.setTextColor(csl);
+		}
 		//评论和转发
 		TextView repost=(TextView) w.findViewById(R.id.numOfComAndTrans);
 		repost.setText("评论 "+p.getComments_count()+" 转发 "+p.getReposts_count());
@@ -419,7 +426,7 @@ public class MainActivity extends Activity {
 				//一张图
 				ImageView imgView=(ImageView) w.findViewById(R.id.weiboImg);
 				imgView.setVisibility(View.VISIBLE);
-				String url="http://ww1.sinaimg.cn/thumbnail/"+pics[0];
+				String url="http://ww1.sinaimg.cn/bmiddle/"+pics[0];
 				loadImage(url,pics[0],imgView);
 			}else{
 				//N张图
@@ -436,7 +443,7 @@ public class MainActivity extends Activity {
 					int imgRid=this.getResources().getIdentifier("img"+index, "id", "com.example.weibonju");
 					ImageView imgView=(ImageView) w.findViewById(imgRid);
 					imgView.setVisibility(View.VISIBLE);
-					String url="http://ww1.sinaimg.cn/thumbnail/"+pics[index-1];
+					String url="http://ww1.sinaimg.cn/bmiddle/"+pics[index-1];
 					loadImage(url,pics[index-1],imgView);
 				}
 			}
@@ -461,10 +468,14 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onPause() {
-		// TODO Auto-generated method stub
 		Spinner spinner=(Spinner)view1.findViewById(R.id.spinner1);
 		ConfigureKeeper.saveSpinnerPos(this, spinner.getSelectedItemPosition());
 		super.onPause();
+	}
+	
+	
+	private void StartAppendAction() {
+		
 	}
 
 }

@@ -17,7 +17,7 @@ public class SinglePost implements Serializable {
 	private int reposts_count,comments_count,attitudes_count;
 	private String pic_ids;
 	private String source;
-	
+	private String gender;
 	private long uid;
 	private String screen_name;
 	private URL profile_image_url;
@@ -88,4 +88,11 @@ public class SinglePost implements Serializable {
 	public void setProfile_image_url(URL profile_image_url) {
 		this.profile_image_url = profile_image_url;
 	}
+	public String getGender() {
+		return gender;
+	}
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
 }

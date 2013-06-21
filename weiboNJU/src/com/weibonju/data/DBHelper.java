@@ -15,7 +15,7 @@ public class DBHelper extends SQLiteOpenHelper {
     		" (pid INTEGER PRIMARY KEY, created_at DATETIME, " +
     		"text NVARCHAR, reposts_count INTEGER, comments_count INTEGER, attitudes_count INTEGER, " +
     		"pic_ids VARCHAR, source NVARCHAR, uid INTEGER, " +
-    		"screen_name NVARCHAR, profile_image_url VARCHAR)";
+    		"screen_name NVARCHAR, profile_image_url VARCHAR, gender VARCHAR)";
     private static final String DATABASE_DELETE=
     		"DROP TABLE IF EXISTS weiboposts";
     

@@ -8,6 +8,7 @@
     <string name="title_activity_welcome">welcome</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_logout">注销账号</string>
+    <string name="menu_clear">清空缓存</string>
 
     <string name="poi0">B2094655D76BAAF9439B</string>
     <string name="poi1">B2094757D06FA3FE409E</string>

@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -18,18 +17,23 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 import com.weibonju.data.SinglePost;
 
 public class PoiTimelineAPI {
 	
-	private static final String TAG="PoiTimelineAPI";
-	
 	public ArrayList<SinglePost> getList(String token, String poi, int num) throws IOException, JSONException{
 		URL url = new URL("https://api.weibo.com/2/place/poi_timeline.json"+"?poiid="+poi+"&count="+num+"&access_token="+token);
+		return getList(url);
+	}
+	
+	public ArrayList<SinglePost> getList(String token, String poi, int num,
+			long pid) throws IOException, JSONException{
+		URL url = new URL("https://api.weibo.com/2/place/poi_timeline.json"+"?poiid="+poi+"&count="+num+"&max_id="+pid+"&access_token="+token);
+		return getList(url);
+	}
+	
+	private ArrayList<SinglePost> getList(URL url) throws IOException, JSONException{
 		URLConnection connection = url.openConnection();
-		
         String sCurrentLine;  
         String sTotalString;  
         sCurrentLine = "";  
@@ -82,6 +86,7 @@ public class PoiTimelineAPI {
 			JSONObject u=p.getJSONObject("user");
 			post.setUid(u.getLong("id"));
 			post.setScreen_name(u.getString("screen_name"));
+			post.setGender(u.getString("gender"));
 			try {
 				post.setProfile_image_url(new URL(u.getString("profile_image_url")));
 			} catch (MalformedURLException e) {
@@ -93,4 +98,6 @@ public class PoiTimelineAPI {
 		
 		return list;
 	}
+
+	
 }

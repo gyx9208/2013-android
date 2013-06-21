@@ -36,6 +36,7 @@ public class PostsDB {
 		contentValues.put("uid", post.getUid());
 		contentValues.put("screen_name", post.getScreen_name());
 		contentValues.put("profile_image_url", post.getProfile_image_url().toString());
+		contentValues.put("gender", post.getGender());
 		database.insert(TABLE_NAME, null, contentValues);
 	}
 	
@@ -57,6 +58,7 @@ public class PostsDB {
             post.setSource(c.getString(c.getColumnIndex("source")));
             post.setUid(c.getLong(c.getColumnIndex("uid")));
             post.setScreen_name(c.getString(c.getColumnIndex("screen_name")));
+            post.setGender(c.getString(c.getColumnIndex("gender")));
             try {
             	post.setProfile_image_url(new URL(c.getString(c.getColumnIndex("profile_image_url"))));
 				post.setCreated_at(format.parse(c.getString(c.getColumnIndex("created_at"))));
