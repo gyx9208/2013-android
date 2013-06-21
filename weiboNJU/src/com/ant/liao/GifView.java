@@ -1,7 +1,6 @@
 package com.ant.liao;
 
 import java.io.InputStream;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -36,8 +35,10 @@ public class GifView extends ImageView implements GifAction{
 
 	private DrawThread drawThread = null;
 	
+	@SuppressWarnings("unused")
 	private Context context = null;
 	
+	@SuppressWarnings("unused")
 	private boolean cacheImage = false;
 	
 	private View backView = null;
@@ -283,8 +284,9 @@ public class GifView extends ImageView implements GifAction{
     	invalidate();
     }
      
-    private Handler redrawHandler = new Handler(){
-    	public void handleMessage(Message msg) {
+	private Handler redrawHandler = new Handler(){
+    	@SuppressWarnings("deprecation")
+		public void handleMessage(Message msg) {
     	    try{
         	    if(backView != null){
                     backView.setBackgroundDrawable(new BitmapDrawable(currentImage));

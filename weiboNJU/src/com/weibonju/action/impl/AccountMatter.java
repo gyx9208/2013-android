@@ -43,18 +43,17 @@ public class AccountMatter implements IAccountMatter {
 		return token;
 	}
 
-	@SuppressWarnings("finally")
 	@Override
 	public boolean getTokenFromSina(String code) {
 		AccessTokenAPI action=new AccessTokenAPI();
 		try{
 			token=action.getTokenFromSina(code);
-		}catch(Exception e){
-			return false;
-		}finally{
 			SPSetToken();
 			ContextSetToken();
 			return true;
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
 		}
 	}
 

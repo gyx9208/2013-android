@@ -116,6 +116,9 @@ public class RefreshAsyncTask extends AsyncTask<String, java.lang.Void, ArrayLis
 	@Override
 	protected void onCancelled() {
 		super.onCancelled();
-		if (timerThread!=null && timerThread.isAlive())timerThread.interrupt();
+		if (timerThread!=null && timerThread.isAlive()){
+			timerThread.interrupt();
+			timerThread=null;
+		}
 	}
 }

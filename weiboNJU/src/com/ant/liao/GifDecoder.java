@@ -7,10 +7,8 @@ import java.io.InputStream;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.Config;
 import android.os.Environment;
-import android.util.Log;
 
 /**
  * @hide
@@ -44,6 +42,7 @@ public class GifDecoder extends Thread{
 	private int bgIndex; // background color index
 	private int bgColor; // background color
 	private int lastBgColor; // previous bg color
+	@SuppressWarnings("unused")
 	private int pixelAspect; // pixel aspect ratio
 
 	private boolean lctFlag; // local color table flag
@@ -217,7 +216,7 @@ public class GifDecoder extends Thread{
 	private void saveImage(Bitmap image,String name){
 	    try{
 	        File f = new File(imagePath + File.separator + name + ".png");
-	        FileOutputStream fos = new FileOutputStream(imagePath + File.separator + getDir() + ".png");
+	        FileOutputStream fos = new FileOutputStream(f);
 	        image.compress(Bitmap.CompressFormat.PNG, 100, fos);
 	    }catch(Exception ex){
 	        

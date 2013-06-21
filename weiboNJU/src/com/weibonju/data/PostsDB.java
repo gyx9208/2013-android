@@ -3,8 +3,6 @@ package com.weibonju.data;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
@@ -20,33 +18,41 @@ public class PostsDB {
 	SQLiteDatabase database;
 	public PostsDB(Context context){
 		dbHelper=new DBHelper(context);
-		database = dbHelper.getWritableDatabase();
+		
 	}
 	
-	public void save(SinglePost post){
-		ContentValues contentValues = new ContentValues();
-		contentValues.put("pid", post.getPid());
-		contentValues.put("created_at", format.format(post.getCreated_at()));
-		contentValues.put("text", post.getText());
-		contentValues.put("reposts_count", post.getReposts_count());
-		contentValues.put("comments_count", post.getComments_count());
-		contentValues.put("attitudes_count", post.getAttitudes_count());
-		contentValues.put("pic_ids", post.getPic_ids());
-		contentValues.put("source", post.getSource());
-		contentValues.put("uid", post.getUid());
-		contentValues.put("screen_name", post.getScreen_name());
-		contentValues.put("profile_image_url", post.getProfile_image_url().toString());
-		contentValues.put("gender", post.getGender());
-		database.insert(TABLE_NAME, null, contentValues);
+	public void saveAll(ArrayList<SinglePost> posts){
+		database = dbHelper.getWritableDatabase();
+		database.execSQL("DELETE FROM "+ TABLE_NAME);
+		for(SinglePost post:posts){
+			ContentValues contentValues = new ContentValues();
+			contentValues.put("pid", post.getPid());
+			contentValues.put("created_at", format.format(post.getCreated_at()));
+			contentValues.put("text", post.getText());
+			contentValues.put("reposts_count", post.getReposts_count());
+			contentValues.put("comments_count", post.getComments_count());
+			contentValues.put("attitudes_count", post.getAttitudes_count());
+			contentValues.put("pic_ids", post.getPic_ids());
+			contentValues.put("source", post.getSource());
+			contentValues.put("uid", post.getUid());
+			contentValues.put("screen_name", post.getScreen_name());
+			contentValues.put("profile_image_url", post.getProfile_image_url().toString());
+			contentValues.put("gender", post.getGender());
+			database.insert(TABLE_NAME, null, contentValues);
+		}
+		database.close();
 	}
 	
 	public void clear(){
+		database = dbHelper.getWritableDatabase();
 		database.execSQL("DELETE FROM "+ TABLE_NAME);
+		database.close();  
 	}
 	
-	public List<SinglePost> getALL(){
+	public ArrayList<SinglePost> getALL(){
+		database = dbHelper.getWritableDatabase();
 		ArrayList<SinglePost> posts=new ArrayList<SinglePost>();
-		Cursor c = database.rawQuery("SELECT * FROM "+ TABLE_NAME, null); 
+		Cursor c = database.rawQuery("SELECT * FROM "+ TABLE_NAME + " ORDER BY pid DESC", null); 
 		while (c.moveToNext()) {  
             SinglePost post = new SinglePost();  
             post.setPid(c.getLong(c.getColumnIndex("pid")));
@@ -68,6 +74,7 @@ public class PostsDB {
 			}
             posts.add(post);
         }  
+		database.close();  
 		return posts;
 	}
 	
@@ -80,10 +87,6 @@ public class PostsDB {
             return cursor.getLong(0);  
         }  
         return 0;  
-    }
-	
-	public void closeDB() {  
-        database.close();  
     }
 
 }

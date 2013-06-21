@@ -12,7 +12,6 @@ import com.weibonju.action.impl.AccountMatter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
@@ -86,7 +85,9 @@ public class WelcomeActivity extends Activity {
 			}
 			
 			System.out.println("2");
+			
 			new Thread(new Runnable(){
+				@Override
 				public void run() {
 					if(acc.getTokenFromSina(code)){
 				        Message msg = new Message();
@@ -98,18 +99,11 @@ public class WelcomeActivity extends Activity {
 					}
 				}
 			}).start();
+			
+	
 		}
 		
-		@SuppressLint("HandlerLeak")
-		private Handler handler=new Handler(){
-			@Override
-			public void handleMessage(Message msg) {
-				// TODO Auto-generated method stub
-				super.handleMessage(msg);
-		        PassToMain();
-			}
-			
-		};
+		
 
 		@Override
 		public void onError(WeiboDialogError e) {
@@ -126,7 +120,15 @@ public class WelcomeActivity extends Activity {
 
 	}
 	
-	
+	private Handler handler=new Handler(){
+		@Override
+		public void handleMessage(Message msg) {
+			// TODO Auto-generated method stub
+			super.handleMessage(msg);
+	        PassToMain();
+		}
+		
+	};
     
 	private void PassToMain() {
 		start=System.currentTimeMillis();

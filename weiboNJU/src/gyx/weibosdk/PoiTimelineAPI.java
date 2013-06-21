@@ -64,7 +64,7 @@ public class PoiTimelineAPI {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			post.setUid(p.getLong("id"));
+			post.setPid(p.getLong("id"));
 			post.setText(p.getString("text"));
 			post.setReposts_count(p.getInt("reposts_count"));
 			post.setComments_count(p.getInt("comments_count"));
