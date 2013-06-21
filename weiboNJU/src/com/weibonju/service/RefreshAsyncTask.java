@@ -80,7 +80,7 @@ public class RefreshAsyncTask extends AsyncTask<String, java.lang.Void, ArrayLis
 		PoiTimelineAPI api=new PoiTimelineAPI();
 		ArrayList<SinglePost> list=null;
 		try {
-			list = api.getList(token, poi);
+			list = api.getList(token, poi, NUM);
 		} catch (Exception e) {
 			e.printStackTrace();
 			list=null;

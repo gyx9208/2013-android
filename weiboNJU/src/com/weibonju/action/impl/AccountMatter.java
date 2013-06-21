@@ -3,7 +3,6 @@ package com.weibonju.action.impl;
 import gyx.weibosdk.AccessTokenAPI;
 import android.content.Context;
 
-import com.example.weibonju.WelcomeActivity;
 import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibonju.action.IAccountMatter;
 import com.weibonju.configure.AccessTokenKeeper;

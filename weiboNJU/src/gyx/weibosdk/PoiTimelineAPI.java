@@ -26,15 +26,10 @@ public class PoiTimelineAPI {
 	
 	private static final String TAG="PoiTimelineAPI";
 	
-	public ArrayList<SinglePost> getList(String token, String poi) throws IOException, JSONException{
-		URL url = new URL("https://api.weibo.com/2/place/poi_timeline.json");
+	public ArrayList<SinglePost> getList(String token, String poi, int num) throws IOException, JSONException{
+		URL url = new URL("https://api.weibo.com/2/place/poi_timeline.json"+"?poiid="+poi+"&count="+num+"&access_token="+token);
 		URLConnection connection = url.openConnection();
-		connection.setDoOutput(true);
-		OutputStreamWriter out = new OutputStreamWriter(connection  
-                .getOutputStream(), "utf-8");
-		out.write("poiid="+poi+"&access_token="+token);
-		out.flush();  
-        out.close();
+		
         String sCurrentLine;  
         String sTotalString;  
         sCurrentLine = "";  

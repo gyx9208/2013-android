@@ -7,15 +7,12 @@ import java.util.List;
 
 import com.ant.liao.GifView;
 import com.ant.liao.GifView.GifImageType;
-import com.weibo.sdk.android.Oauth2AccessToken;
-import com.weibo.sdk.android.Weibo;
 import com.weibonju.action.IAccountMatter;
 import com.weibonju.action.impl.AccountMatter;
 import com.weibonju.configure.ConfigureKeeper;
 import com.weibonju.configure.WeiboContext;
 import com.weibonju.data.SinglePost;
 import com.weibonju.service.RefreshAsyncTask;
-import com.weibonju.service.RefreshWeiboService;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -30,7 +27,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,10 +39,8 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 

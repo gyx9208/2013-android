@@ -2,16 +2,6 @@ package com.example.weibonju;
 
 import gyx.weibosdk.Constants;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.URL;
-import java.net.URLConnection;
-
-import org.json.JSONObject;
-
-import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibo.sdk.android.Weibo;
 import com.weibo.sdk.android.WeiboAuthListener;
 import com.weibo.sdk.android.WeiboDialogError;
@@ -19,10 +9,10 @@ import com.weibo.sdk.android.WeiboException;
 import com.weibo.sdk.android.sso.SsoHandler;
 import com.weibonju.action.IAccountMatter;
 import com.weibonju.action.impl.AccountMatter;
-import com.weibonju.configure.AccessTokenKeeper;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.Menu;
@@ -110,13 +100,12 @@ public class WelcomeActivity extends Activity {
 			}).start();
 		}
 		
+		@SuppressLint("HandlerLeak")
 		private Handler handler=new Handler(){
-
 			@Override
 			public void handleMessage(Message msg) {
 				// TODO Auto-generated method stub
 				super.handleMessage(msg);
-				
 		        PassToMain();
 			}
 			
